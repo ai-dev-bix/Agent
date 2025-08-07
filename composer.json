@@ -1,17 +1,25 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "laravel/ai-saas-platform",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "AI Agents SaaS Platform - Chatbot management system with Laravel",
+    "keywords": ["laravel", "framework", "ai", "saas", "chatbot", "openai"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "laravel/framework": "^12.0",
-        "laravel/tinker": "^2.10.1"
+        "laravel/tinker": "^2.10.1",
+        "laravel/sanctum": "^4.0",
+        "laravel/socialite": "^5.15",
+        "openai-php/client": "^0.10.1",
+        "stripe/stripe-php": "^16.2",
+        "predis/predis": "^2.2",
+        "spatie/laravel-permission": "^6.9",
+        "intervention/image": "^3.8"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
+        "laravel/breeze": "^2.3",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
