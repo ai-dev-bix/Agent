@@ -28,7 +28,10 @@ class User extends Authenticatable
         'free_messages_limit',
         'last_free_message_reset',
         'is_admin',
-        'preferences'
+        'preferences',
+        'google_id',
+        'facebook_id',
+        'avatar'
     ];
 
     /**

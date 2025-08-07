@@ -43,6 +43,12 @@ Route::get('/', function () {
 // Authentication Routes (Laravel Breeze)
 require __DIR__.'/auth.php';
 
+// OAuth Authentication Routes
+Route::get('/auth/google', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+Route::get('/auth/facebook', [App\Http\Controllers\Auth\SocialAuthController::class, 'redirectToFacebook'])->name('auth.facebook');
+Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
+
 // Public Routes
 Route::get('/agents', [AiAgentController::class, 'public'])->name('agents.public');
 Route::get('/chat/public/{token}', [ChatController::class, 'public'])->name('chat.public');
