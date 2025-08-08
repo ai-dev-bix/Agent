@@ -14,7 +14,7 @@ class AiAgentController extends Controller
 
     public function __construct(OpenAIService $openAIService)
     {
-        $this->middleware('auth');
+        $this->middleware('auth')->except(['public', 'show']);
         $this->openAIService = $openAIService;
     }
 
@@ -88,16 +88,26 @@ class AiAgentController extends Controller
      */
     public function show(AiAgent $agent)
     {
-        // Check if user can view this agent
-        if (!$agent->is_public && $agent->created_by !== auth()->id()) {
-            abort(403);
+        // If guest, only allow public & active agents
+        if (!auth()->check()) {
+            if (!$agent->is_public || !$agent->is_active) {
+                abort(404);
+            }
+        } else {
+            // Check if user can view this agent
+            if (!$agent->is_public && $agent->created_by !== auth()->id()) {
+                abort(403);
+            }
         }
 
-        $recentChats = $agent->chatThreads()
-            ->where('user_id', auth()->id())
-            ->latest('last_activity_at')
-            ->limit(5)
-            ->get();
+        $recentChats = collect();
+        if (auth()->check()) {
+            $recentChats = $agent->chatThreads()
+                ->where('user_id', auth()->id())
+                ->latest('last_activity_at')
+                ->limit(5)
+                ->get();
+        }
 
         return view('agents.show', compact('agent', 'recentChats'));
     }

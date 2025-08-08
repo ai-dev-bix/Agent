@@ -7,6 +7,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\ProfileController;
 
 // Installation Routes (only accessible if not installed)
 Route::middleware(['installation'])->group(function () {
@@ -29,13 +30,17 @@ Route::get('/', function () {
         return redirect()->route('installation.welcome');
     }
     
-    // Show public agents on homepage
-    $agents = \App\Models\AiAgent::public()
-        ->active()
-        ->with('creator')
-        ->latest()
-        ->limit(6)
-        ->get();
+    // Show public agents on homepage (skip if tables are not migrated)
+    try {
+        $agents = \App\Models\AiAgent::public()
+            ->active()
+            ->with('creator')
+            ->latest()
+            ->limit(6)
+            ->get();
+    } catch (\Throwable $e) {
+        $agents = collect();
+    }
     
     return view('welcome', compact('agents'));
 })->name('home');
@@ -50,11 +55,15 @@ Route::get('/auth/facebook', [App\Http\Controllers\Auth\SocialAuthController::cl
 Route::get('/auth/facebook/callback', [App\Http\Controllers\Auth\SocialAuthController::class, 'handleFacebookCallback'])->name('auth.facebook.callback');
 
 // Public Routes
-Route::get('/agents', [AiAgentController::class, 'public'])->name('agents.public');
+Route::get('/explore', [AiAgentController::class, 'public'])->name('agents.public');
 Route::get('/chat/public/{token}', [ChatController::class, 'public'])->name('chat.public');
 
 // Authenticated Routes
 Route::middleware('auth')->group(function () {
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     // Dashboard
     Route::get('/dashboard', function () {

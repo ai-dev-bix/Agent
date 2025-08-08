@@ -225,11 +225,24 @@ class InstallationController extends Controller
             // Create default credit packages
             $this->createDefaultCreditPackages();
             
+            // Attempt to create storage symlink; fallback to copying if not allowed
+            try {
+                Artisan::call('storage:link');
+            } catch (\Throwable $e) {
+                $publicStorage = public_path('storage');
+                if (!File::exists($publicStorage)) {
+                    File::makeDirectory($publicStorage, 0755, true);
+                }
+                File::copyDirectory(storage_path('app/public'), $publicStorage);
+            }
+            
             // Mark installation as completed
             $this->updateEnvFile(['INSTALLATION_COMPLETED' => 'true']);
             
-            // Clear caches
-            Artisan::call('config:clear');
+            // Cache config, routes, and views for performance without SSH
+            Artisan::call('config:cache');
+            Artisan::call('route:cache');
+            Artisan::call('view:cache');
             Artisan::call('cache:clear');
             
             return response()->json([

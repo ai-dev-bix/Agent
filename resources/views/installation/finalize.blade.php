@@ -187,6 +187,8 @@
                         <li>Do not close your browser or navigate away during installation</li>
                         <li>You can configure additional settings after installation</li>
                         <li>Make sure your OpenAI API key is valid for AI functionality</li>
+                        <li>Assets are auto-loaded via CDN if a build is not present; no SSH is required</li>
+                        <li>Public storage is linked automatically; if symlinks are not allowed, files are copied</li>
                     </ul>
                 </div>
             </div>
