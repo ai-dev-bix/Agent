@@ -10,7 +10,13 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\ProfileController;
 
 // Installation Routes (only accessible if not installed)
-Route::middleware(['installation'])->group(function () {
+Route::middleware(['installation'])
+    ->withoutMiddleware([
+        \Illuminate\Cookie\Middleware\EncryptCookies::class,
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
+    ])->group(function () {
     Route::get('/install', [InstallationController::class, 'index'])->name('installation.welcome');
     Route::get('/install/requirements', [InstallationController::class, 'requirements'])->name('installation.requirements');
     Route::get('/install/database', [InstallationController::class, 'database'])->name('installation.database');
